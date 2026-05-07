@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle2, Send, Loader2 } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Loader2, Send } from 'lucide-react';
 
 export const Contact = () => {
+  const projectTypes = [
+    'Custom Software Development',
+    'Fintech & Payment Systems',
+    'Enterprise Cloud/DevOps',
+    'WiFi/ISP Management',
+  ];
+
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    projectType: 'Custom Software Development'
+    projectType: projectTypes[0]
   });
 
   const benefits = [
@@ -122,16 +129,20 @@ export const Contact = () => {
 
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase font-bold tracking-widest text-muted ml-1">Project Type</label>
-                    <select 
-                      value={formData.projectType}
-                      onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-border rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none cursor-pointer"
-                    >
-                      <option>Custom Software Development</option>
-                      <option>Fintech & Payment Systems</option>
-                      <option>Enterprise Cloud/DevOps</option>
-                      <option>WiFi/ISP Management</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={formData.projectType}
+                        onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
+                        className="w-full h-14 bg-slate-50 dark:bg-slate-800 border border-border rounded-2xl px-4 pr-12 text-sm font-medium text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none cursor-pointer"
+                      >
+                        {projectTypes.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="w-4 h-4 text-muted absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
                   </div>
 
                   <button 

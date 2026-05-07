@@ -1,8 +1,43 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import {
+  Cloud,
+  Code2,
+  Container,
+  Database,
+  Feather,
+  Layers,
+  Leaf,
+  Server,
+  Terminal,
+  Triangle,
+} from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export const TechStack = () => {
+  const [failedIcons, setFailedIcons] = React.useState<Record<string, boolean>>({});
+
+  const fallbackIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+    React: Code2,
+    'Next.js': Layers,
+    Tailwind: Feather,
+    Angular: Triangle,
+    'Spring Boot': Leaf,
+    'Node.js': Terminal,
+    'C#': Code2,
+    Python: Code2,
+    PHP: Code2,
+    Yii: Server,
+    Docker: Container,
+    AWS: Cloud,
+    Postgres: Database,
+    'SQL Server': Database,
+  };
+
+  const handleIconError = (name: string) => {
+    setFailedIcons((prev) => (prev[name] ? prev : {...prev, [name]: true}));
+  };
+
   const categories = [
     {
       name: 'Frontend',
@@ -70,26 +105,38 @@ export const TechStack = () => {
 
               <div className="flex flex-wrap gap-8 items-center">
                 {cat.techs.map((tech) => (
+                  (() => {
+                    const FallbackIcon = fallbackIcons[tech.name] ?? Code2;
+                    const useFallback = failedIcons[tech.name];
+
+                    return (
                   <motion.div
                     key={tech.name}
                     whileHover={{ scale: 1.1, y: -5 }}
                     className="flex flex-col items-center gap-3 group cursor-default"
                   >
                     <div className="w-10 h-10 flex items-center justify-center transition-all duration-300">
-                      <img 
-                        src={tech.url} 
-                        alt={tech.name} 
-                        className={cn(
-                          "w-8 h-8 object-contain transition-all duration-300 group-hover:scale-110",
-                          (tech.name === "Next.js") && "dark:invert"
-                        )}
-                        referrerPolicy="no-referrer"
-                      />
+                      {useFallback ? (
+                        <FallbackIcon className="w-8 h-8 text-primary transition-all duration-300 group-hover:scale-110" />
+                      ) : (
+                        <img
+                          src={tech.url}
+                          alt={tech.name}
+                          className={cn(
+                            "w-8 h-8 object-contain transition-all duration-300 group-hover:scale-110",
+                            (tech.name === "Next.js") && "dark:invert"
+                          )}
+                          referrerPolicy="no-referrer"
+                          onError={() => handleIconError(tech.name)}
+                        />
+                      )}
                     </div>
                     <span className="text-[10px] font-bold text-muted transition-colors group-hover:text-foreground">
                       {tech.name}
                     </span>
                   </motion.div>
+                    );
+                  })()
                 ))}
               </div>
             </motion.div>
